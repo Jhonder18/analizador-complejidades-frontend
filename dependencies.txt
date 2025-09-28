@@ -1,0 +1,61 @@
+# Dependencias del Proyecto - Analizador de Complejidades Frontend
+
+## Instalación Rápida
+Para instalar todas las dependencias de una vez:
+```
+npm install @monaco-editor/react@^4.7.0 react@^19.1.1 react-dom@^19.1.1 react-router-dom@^7.9.3 @eslint/js@^9.36.0 @types/react@^19.1.13 @types/react-dom@^19.1.9 @vitejs/plugin-react@^5.0.3 eslint@^9.36.0 eslint-plugin-react-hooks@^5.2.0 eslint-plugin-react-refresh@^0.4.20 globals@^16.4.0 vite@^7.1.7 --save-dev @eslint/js @types/react @types/react-dom @vitejs/plugin-react eslint eslint-plugin-react-hooks eslint-plugin-react-refresh globals vite
+```
+
+## Dependencias Principales (dependencies)
+- @monaco-editor/react@^4.7.0  # Editor de código Monaco
+- react@^19.1.1               # Framework React
+- react-dom@^19.1.1           # React DOM
+- react-router-dom@^7.9.3     # Enrutamiento para React
+
+## Dependencias de Desarrollo (devDependencies)
+- @eslint/js@^9.36.0                    # ESLint JavaScript
+- @types/react@^19.1.13                 # Tipos TypeScript para React
+- @types/react-dom@^19.1.9              # Tipos TypeScript para React DOM
+- @vitejs/plugin-react@^5.0.3           # Plugin Vite para React
+- eslint@^9.36.0                        # Linter ESLint
+- eslint-plugin-react-hooks@^5.2.0      # Plugin ESLint para React Hooks
+- eslint-plugin-react-refresh@^0.4.20   # Plugin ESLint para React Refresh
+- globals@^16.4.0                       # Variables globales
+- vite@^7.1.7                           # Build tool y dev server
+
+## Comandos de Instalación Separados
+
+### Solo dependencias principales:
+```
+npm install @monaco-editor/react@^4.7.0 react@^19.1.1 react-dom@^19.1.1 react-router-dom@^7.9.3
+```
+
+### Solo dependencias de desarrollo:
+```
+npm install --save-dev @eslint/js@^9.36.0 @types/react@^19.1.13 @types/react-dom@^19.1.9 @vitejs/plugin-react@^5.0.3 eslint@^9.36.0 eslint-plugin-react-hooks@^5.2.0 eslint-plugin-react-refresh@^0.4.20 globals@^16.4.0 vite@^7.1.7
+```
+
+## Instrucciones de Instalación Completa
+
+1. Clona el repositorio
+2. Navega al directorio del proyecto
+3. Ejecuta uno de los comandos de instalación de arriba
+4. Ejecuta `npm run dev` para iniciar el servidor de desarrollo
+
+## Scripts Disponibles
+- `npm run dev`     # Inicia el servidor de desarrollo
+- `npm run build`   # Construye el proyecto para producción
+- `npm run lint`    # Ejecuta el linter
+- `npm run preview` # Previsualiza la build de producción
+
+## Requisitos del Sistema
+- Node.js >= 18.0.0
+- npm >= 9.0.0
+
+## Versiones Específicas Utilizadas
+Este proyecto fue desarrollado con:
+- Node.js v20.x
+- npm v10.x
+- React 19.1.1
+- Vite 7.1.7
+- Monaco Editor 4.7.0

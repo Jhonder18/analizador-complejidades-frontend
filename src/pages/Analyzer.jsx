@@ -57,7 +57,7 @@ const Analyzer = () => {
       </div>
 
       <div className="analyzer-layout">
-        {/* Panel izquierdo - Editor */}
+        {/* Panel superior - Editor */}
         <div className="analyzer-panel editor-panel">
           <div className="panel-header">
             <h2>Editor</h2>
@@ -88,50 +88,51 @@ const Analyzer = () => {
           )}
         </div>
 
-        {/* Panel derecho - Resultados */}
-        <div className="analyzer-panel results-panel">
-          <div className="panel-header">
-            <h2>Resultados</h2>
-          </div>
-          
-          {loading ? (
-            <Loader message="Analizando complejidad..." />
-          ) : (
-            <div className="results-content">
-              <OutputPanel 
-                analysisResult={analysisResult} 
-                loading={loading} 
-              />
-              
-              {analysisResult && analysisResult.diagram && (
-                <div className="diagram-section">
-                  <DiagramViewer 
-                    diagramData={analysisResult.diagram}
-                    type={analysisResult.diagramType || 'json'}
-                  />
-                </div>
-              )}
+        {/* Panel inferior - Resultados */}
+        {(loading || analysisResult) && (
+          <div className="analyzer-panel results-panel">
+            <div className="panel-header">
+              <h2>Resultados del Análisis</h2>
             </div>
-          )}
-        </div>
-      </div>
+            
+            {loading ? (
+              <Loader message="Analizando complejidad..." />
+            ) : (
+              <div className="results-content">
+                <OutputPanel 
+                  analysisResult={analysisResult} 
+                  loading={loading} 
+                />
+                
+                {analysisResult && analysisResult.diagram && (
+                  <div className="diagram-section">
+                    <DiagramViewer 
+                      diagramData={analysisResult.diagram}
+                      type={analysisResult.diagramType || 'json'}
+                    />
+                  </div>
+                )}
 
-      {/* Panel inferior para información adicional */}
-      {analysisResult && (
-        <div className="additional-info">
-          <div className="info-section">
-            <h3>Información del Análisis</h3>
-            <div className="analysis-metadata">
-              <span><strong>Tipo de entrada:</strong> {currentInput.type === 'natural' ? 'Lenguaje Natural' : 'Código'}</span>
-              {currentInput.type === 'code' && (
-                <span><strong>Lenguaje:</strong> {currentInput.language?.toUpperCase() || 'N/A'}</span>
-              )}
-              <span><strong>Tiempo de análisis:</strong> {analysisResult.analysisTime || 'N/A'}</span>
-              <span><strong>Algoritmos detectados:</strong> {analysisResult.detectedAlgorithms?.length || 0}</span>
-            </div>
+                {/* Información adicional del análisis */}
+                {analysisResult && (
+                  <div className="analysis-summary">
+                    <h3>Resumen del Análisis</h3>
+                    <div className="analysis-metadata">
+                      <span><strong>Tipo de entrada:</strong> {currentInput.type === 'natural' ? 'Lenguaje Natural' : 'Código'}</span>
+                      {currentInput.type === 'code' && (
+                        <span><strong>Lenguaje:</strong> {currentInput.language?.toUpperCase() || 'N/A'}</span>
+                      )}
+                      <span><strong>Tiempo de análisis:</strong> {analysisResult.analysisTime || 'N/A'}</span>
+                      <span><strong>Algoritmos detectados:</strong> {analysisResult.detectedAlgorithms?.length || 0}</span>
+                      <span><strong>Confianza:</strong> {analysisResult.confidence ? `${(analysisResult.confidence * 100).toFixed(1)}%` : 'N/A'}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

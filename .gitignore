@@ -1,0 +1,16 @@
+# dependencias
+node_modules/
+# builds
+dist/
+build/
+# entorno
+.env
+.env.*
+# editores/OS
+.vscode/
+.DS_Store
+# logs/coverage
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+coverage/

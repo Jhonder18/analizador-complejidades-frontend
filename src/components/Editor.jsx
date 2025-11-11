@@ -210,17 +210,17 @@ int main() {
   // Ejemplos de descripción en lenguaje natural
   const getNaturalExamples = (algorithmType) => {
     const examples = {
-      'selection-sort': `Algoritmo de ordenamiento que encuentra el elemento más pequeño en cada iteración y lo coloca en la posición correcta.`,
+      'selection-sort': `Dame el algoritmo de ordenamiento por selección`,
 
-      'bubble-sort': `Algoritmo que compara elementos adyacentes y los intercambia si están en orden incorrecto hasta que no se necesiten más intercambios.`,
+      'bubble-sort': `Dame el algoritmo de ordenamiento burbuja`,
 
-      'binary-search': `Búsqueda en un array ordenado que divide repetidamente el espacio de búsqueda por la mitad comparando con el elemento del medio.`,
+      'binary-search': `Dame el algoritmo de búsqueda binaria`,
 
-      'merge-sort': `Algoritmo divide y vencerás que divide el array recursivamente por la mitad y luego combina los subarrays ordenadamente.`,
+      'merge-sort': `Dame el algoritmo de ordenamiento por mezcla`,
 
-      'quick-sort': `Algoritmo que selecciona un pivot, reorganiza el array con elementos menores a la izquierda y mayores a la derecha, aplicando recursión a ambas mitades.`,
+      'quick-sort': `Dame el algoritmo de ordenamiento rápido`,
 
-      'fibonacci': `Secuencia donde cada número es la suma de los dos anteriores: F(0)=0, F(1)=1, F(n)=F(n-1)+F(n-2).`
+      'fibonacci': `Dame el algoritmo de la secuencia de Fibonacci`
     };
 
     return examples[algorithmType] || '';

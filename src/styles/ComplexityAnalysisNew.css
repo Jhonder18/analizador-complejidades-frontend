@@ -1,0 +1,238 @@
+/* ComplexityAnalysisNew.css - Estilos para el componente AST */
+
+.complexity-analysis {
+  padding: 1.5rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+}
+
+.analysis-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.analysis-header h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  font-size: 1.8rem;
+}
+
+.analysis-header p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+/* AST Metadata */
+.ast-metadata {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--bg-primary);
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.ast-metadata h4 {
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}
+
+.metadata-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.metadata-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.metadata-item strong {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.metadata-item span {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.status-success {
+  color: #10b981;
+}
+
+.status-error {
+  color: #ef4444;
+}
+
+/* AST Tree */
+.ast-tree {
+  margin-bottom: 2rem;
+}
+
+.ast-tree h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}
+
+.ast-hint {
+  margin: 0 0 1rem 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.ast-tree-container {
+  background: var(--bg-primary);
+  padding: 1.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  max-height: 600px;
+  overflow-y: auto;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9rem;
+}
+
+.ast-node {
+  margin: 0.25rem 0;
+}
+
+.ast-node-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.ast-node-header:hover {
+  background: var(--bg-hover);
+}
+
+.ast-node-toggle {
+  color: var(--primary-color);
+  font-weight: bold;
+  font-size: 0.8rem;
+  user-select: none;
+}
+
+.ast-node-type {
+  color: #3b82f6;
+  font-weight: bold;
+  padding: 0.2rem 0.5rem;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 3px;
+}
+
+.ast-node-name {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.ast-node-op {
+  color: #f59e0b;
+  font-style: italic;
+}
+
+.ast-node-value {
+  color: #8b5cf6;
+}
+
+.ast-node-var {
+  color: #ec4899;
+  font-weight: 500;
+}
+
+.ast-node-children {
+  border-left: 2px dotted var(--border-color);
+  margin-left: 10px;
+  padding-left: 10px;
+}
+
+.ast-param {
+  padding: 0.25rem 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.ast-param-label {
+  color: var(--primary-color);
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.ast-block {
+  margin: 0.5rem 0;
+}
+
+.ast-block strong {
+  color: var(--primary-color);
+  margin-right: 0.5rem;
+}
+
+/* AST JSON Section */
+.ast-json-section {
+  margin-top: 2rem;
+}
+
+.ast-json-section h4 {
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}
+
+.ast-json-editor {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+/* Dark Theme */
+[data-theme="dark"] .complexity-analysis {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .ast-metadata {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .ast-tree-container {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .ast-node-header:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .ast-node-type {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .analysis-header h3 {
+    font-size: 1.5rem;
+  }
+
+  .metadata-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ast-tree-container {
+    max-height: 400px;
+    font-size: 0.85rem;
+  }
+
+  .ast-node {
+    font-size: 0.85rem;
+  }
+}

@@ -4,7 +4,77 @@ import { useTheme } from '../contexts/ThemeContext';
 
 const ComplexityAnalysis = ({ analysisResult }) => {
   const [selectedCase, setSelectedCase] = useState('worst');
+  const [expandedNodes, setExpandedNodes] = useState(new Set());
   const { isDark } = useTheme();
+
+  const toggleNode = (nodeId) => {
+    const newExpanded = new Set(expandedNodes);
+    if (newExpanded.has(nodeId)) {
+      newExpanded.delete(nodeId);
+    } else {
+      newExpanded.add(nodeId);
+    }
+    setExpandedNodes(newExpanded);
+  };
+
+  const renderASTNode = (node, level = 0) => {
+    if (!node) return null;
+
+    const nodeId = `${node.type}-${level}`;
+    const isExpanded = expandedNodes.has(nodeId);
+    const hasChildren = node.body || node.functions || node.params || node.statements;
+
+    return (
+      <div key={nodeId} className="ast-node" style={{ marginLeft: `${level * 20}px` }}>
+        <div className="ast-node-header" onClick={() => hasChildren && toggleNode(nodeId)}>
+          {hasChildren && (
+            <span className="ast-node-toggle">{isExpanded ? '▼' : '▶'}</span>
+          )}
+          <span className="ast-node-type">{node.type}</span>
+          {node.name && <span className="ast-node-name">{node.name}</span>}
+          {node.op && <span className="ast-node-op">op: {node.op}</span>}
+          {node.value !== undefined && <span className="ast-node-value">value: {node.value}</span>}
+        </div>
+
+        {isExpanded && hasChildren && (
+          <div className="ast-node-children">
+            {node.functions?.map((func, idx) => renderASTNode(func, level + 1))}
+            {node.body && renderASTNode(node.body, level + 1)}
+            {node.params?.map((param, idx) => (
+              <div key={`param-${idx}`} className="ast-param" style={{ marginLeft: `${(level + 1) * 20}px` }}>
+                <span className="ast-param-label">param:</span> {param.name}
+              </div>
+            ))}
+            {node.statements?.map((stmt, idx) => renderASTNode(stmt, level + 1))}
+            {node.then_block && (
+              <div key="then" className="ast-block" style={{ marginLeft: `${(level + 1) * 20}px` }}>
+                <strong>then:</strong>
+                {renderASTNode(node.then_block, level + 2)}
+              </div>
+            )}
+            {node.else_block && (
+              <div key="else" className="ast-block" style={{ marginLeft: `${(level + 1) * 20}px` }}>
+                <strong>else:</strong>
+                {renderASTNode(node.else_block, level + 2)}
+              </div>
+            )}
+            {node.left && (
+              <div key="left" style={{ marginLeft: `${(level + 1) * 20}px` }}>
+                <strong>left:</strong>
+                {renderASTNode(node.left, level + 2)}
+              </div>
+            )}
+            {node.right && (
+              <div key="right" style={{ marginLeft: `${(level + 1) * 20}px` }}>
+                <strong>right:</strong>
+                {renderASTNode(node.right, level + 2)}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   // Datos de ejemplo - en una implementación real, estos vendrían del análisis
   const getAnalysisData = () => {

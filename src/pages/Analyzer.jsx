@@ -29,10 +29,11 @@ const Analyzer = () => {
     try {
       const result = await analyzeComplexity({
         input: currentInput.value,
-        type: currentInput.type,
-        language: currentInput.language || 'python'
+        text: currentInput.value,
+        language_hint: 'es' // Siempre en español
       });
       
+      console.log('Analysis result:', result); // Para debugging
       setAnalysisResult(result);
     } catch (err) {
       setError('Error al analizar el código: ' + (err.message || 'Error desconocido'));

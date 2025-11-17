@@ -198,13 +198,7 @@ const OutputPanel = ({ analysisResult, loading }) => {
           className={`tab ${activeTab === 'complexity' ? 'active' : ''}`}
           onClick={() => setActiveTab('complexity')}
         >
-          📊 Resumen
-        </button>
-        <button
-          className={`tab ${activeTab === 'pseudocode' ? 'active' : ''}`}
-          onClick={() => setActiveTab('pseudocode')}
-        >
-          📝 Pseudocódigo
+          📊 Resumen y Pseudocódigo
         </button>
         <button
           className={`tab ${activeTab === 'costs' ? 'active' : ''}`}
@@ -237,6 +231,42 @@ const OutputPanel = ({ analysisResult, loading }) => {
           <div className="complexity-results">
             {/* Advertencias de Validación */}
             <DataValidationWarning analysisResult={analysisResult} />
+
+            {/* Pseudocódigo */}
+            <div className="pseudocode-section">
+              <h3>📝 Pseudocódigo</h3>
+              {analysisResult.validation?.codigo_corregido ? (
+                <div className="pseudocode-editor">
+                  <MonacoEditor
+                    height="400px"
+                    language="plaintext"
+                    value={analysisResult.validation.codigo_corregido}
+                    theme={isDark ? "vs-dark" : "vs-light"}
+                    options={{
+                      readOnly: true,
+                      minimap: { enabled: true },
+                      scrollBeyondLastLine: false,
+                      fontSize: 14,
+                      lineNumbers: 'on',
+                      roundedSelection: false,
+                      automaticLayout: true,
+                      wordWrap: 'on',
+                      tabSize: 4,
+                    }}
+                  />
+                </div>
+              ) : (
+                <p className="no-data">No hay pseudocódigo disponible</p>
+              )}
+            </div>
+
+            {/* Resumen del Algoritmo */}
+            {analysisResult.summary && (
+              <div className="algorithm-summary">
+                <h3>📖 Resumen del Algoritmo</h3>
+                <p className="summary-text">{analysisResult.summary}</p>
+              </div>
+            )}
 
             {/* Resumen General */}
             {analysisResult.solution?.big_o && (
@@ -309,93 +339,7 @@ const OutputPanel = ({ analysisResult, loading }) => {
           </div>
         )}
 
-        {activeTab === 'pseudocode' && (
-          <div className="pseudocode-tab">
-            <h3>📝 Pseudocódigo Generado</h3>
-            {analysisResult.validation?.codigo_corregido ? (
-              <div className="pseudocode-editor">
-                <MonacoEditor
-                  height="500px"
-                  language="plaintext"
-                  value={analysisResult.validation.codigo_corregido}
-                  theme={isDark ? "vs-dark" : "vs-light"}
-                  options={{
-                    readOnly: true,
-                    minimap: { enabled: true },
-                    scrollBeyondLastLine: false,
-                    fontSize: 14,
-                    lineNumbers: 'on',
-                    roundedSelection: false,
-                    automaticLayout: true,
-                    wordWrap: 'on',
-                    tabSize: 4,
-                  }}
-                />
-              </div>
-            ) : (
-              <p className="no-data">No hay pseudocódigo disponible</p>
-            )}
 
-            {/* Información de Validación */}
-            {analysisResult.validation && (
-              <div className="validation-info">
-                <h4>✅ Información de Validación</h4>
-                <div className="validation-grid">
-                  <div className="validation-item">
-                    <strong>¿Algoritmo Válido?</strong>
-                    <span className={analysisResult.validation.era_algoritmo_valido ? 'status-success' : 'status-error'}>
-                      {analysisResult.validation.era_algoritmo_valido ? 'Sí' : 'No'}
-                    </span>
-                  </div>
-                  {analysisResult.validation.hints && (
-                    <>
-                      <div className="validation-item">
-                        <strong>Parser Engine:</strong>
-                        <span>{analysisResult.validation.hints.parser_engine}</span>
-                      </div>
-                      <div className="validation-item">
-                        <strong>Nodos AST:</strong>
-                        <span>{analysisResult.validation.hints.parse_tree_nodes}</span>
-                      </div>
-                      <div className="validation-item">
-                        <strong>Líneas:</strong>
-                        <span>{analysisResult.validation.hints.line_count}</span>
-                      </div>
-                      <div className="validation-item">
-                        <strong>Errores:</strong>
-                        <span className={analysisResult.validation.hints.total_errors > 0 ? 'status-error' : 'status-success'}>
-                          {analysisResult.validation.hints.total_errors}
-                        </span>
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                {analysisResult.validation.normalizaciones && analysisResult.validation.normalizaciones.length > 0 && (
-                  <div className="normalizations-list">
-                    <h5>🔧 Normalizaciones Aplicadas:</h5>
-                    <ul>
-                      {analysisResult.validation.normalizaciones.map((norm, index) => (
-                        <li key={index}>{norm}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {analysisResult.validation.errores && analysisResult.validation.errores.length > 0 && (
-                  <div className="errors-list">
-                    <h5>❌ Errores Encontrados:</h5>
-                    <ul>
-                      {analysisResult.validation.errores.map((error, index) => (
-                        <li key={index} className="error-item">{error}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        )}
 
         {activeTab === 'costs' && (
           <CostsAnalysis 
@@ -414,6 +358,14 @@ const OutputPanel = ({ analysisResult, loading }) => {
 
         {activeTab === 'details' && (
           <div className="analysis-details">
+            {/* Resumen del Algoritmo */}
+            {analysisResult.summary && (
+              <div className="summary-section">
+                <h3>📖 Resumen del Algoritmo</h3>
+                <p className="summary-description">{analysisResult.summary}</p>
+              </div>
+            )}
+
             <h3>📋 Entrada Original</h3>
             {analysisResult.input_text && (
               <div className="code-display">

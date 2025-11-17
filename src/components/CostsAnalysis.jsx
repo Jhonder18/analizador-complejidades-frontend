@@ -6,7 +6,7 @@ import 'katex/dist/katex.min.css';
 import '../styles/CostsAnalysis.css';
 
 export const CostsAnalysis = ({ costs, pseudocode }) => {
-  const [viewMode, setViewMode] = useState('per-line'); // 'per-line' o 'per-node'
+  const [viewMode] = useState('per-line'); // Solo mostrar 'per-line'
   const { theme } = useTheme();
 
   // Función para convertir expresiones matemáticas a LaTeX
@@ -180,27 +180,12 @@ export const CostsAnalysis = ({ costs, pseudocode }) => {
     );
   }
 
-  const { per_node, per_line, total } = costs;
+  const { per_line, total } = costs;
 
   return (
     <div className="costs-analysis">
       <div className="costs-header">
-        <h3>💰 Análisis de Costos</h3>
-        
-        <div className="view-mode-selector">
-          <button
-            className={`mode-btn ${viewMode === 'per-line' ? 'active' : ''}`}
-            onClick={() => setViewMode('per-line')}
-          >
-            📝 Por Línea
-          </button>
-          <button
-            className={`mode-btn ${viewMode === 'per-node' ? 'active' : ''}`}
-            onClick={() => setViewMode('per-node')}
-          >
-            🌳 Por Nodo AST
-          </button>
-        </div>
+        <h3>💰 Análisis de Costos por Línea</h3>
       </div>
 
       {/* Vista de Pseudocódigo */}
@@ -227,7 +212,7 @@ export const CostsAnalysis = ({ costs, pseudocode }) => {
       )}
 
       {/* Costos por Línea */}
-      {viewMode === 'per-line' && per_line && per_line.length > 0 && (
+      {per_line && per_line.length > 0 && (
         <div className="costs-section">
           <h4>📊 Costos por Línea de Código</h4>
           <div className="costs-table-wrapper">
@@ -271,81 +256,7 @@ export const CostsAnalysis = ({ costs, pseudocode }) => {
         </div>
       )}
 
-      {/* Costos por Nodo */}
-      {viewMode === 'per-node' && per_node && per_node.length > 0 && (
-        <div className="costs-section">
-          <h4>🌳 Costos por Nodo del AST</h4>
-          <div className="nodes-list">
-            {per_node.map((node, index) => (
-              <div key={index} className="node-card">
-                <div className="node-header">
-                  <div className="node-info">
-                    <span className="node-id">{node.node_id}</span>
-                    <span className="node-type">{node.node_type}</span>
-                  </div>
-                  {node.line_start && node.line_end && (
-                    <span className="node-lines">
-                      Líneas {node.line_start}-{node.line_end}
-                    </span>
-                  )}
-                </div>
-                
-                {node.code_snippet && (
-                  <div className="node-snippet">
-                    <code>{node.code_snippet}</code>
-                  </div>
-                )}
 
-                <div className="node-costs">
-                  <div className="cost-row">
-                    <span className="cost-label">Costo Total:</span>
-                    <div className="cost-values">
-                      <div className="cost-value best">
-                        <span className="case-label">Mejor:</span>
-                        <div dangerouslySetInnerHTML={{ __html: parseSumToLatex(node.cost.best) }} />
-                      </div>
-                      <div className="cost-value avg">
-                        <span className="case-label">Promedio:</span>
-                        <div dangerouslySetInnerHTML={{ __html: parseSumToLatex(node.cost.avg) }} />
-                      </div>
-                      <div className="cost-value worst">
-                        <span className="case-label">Peor:</span>
-                        <div dangerouslySetInnerHTML={{ __html: parseSumToLatex(node.cost.worst) }} />
-                      </div>
-                    </div>
-                  </div>
-
-                  {node.own_cost && (
-                    <div className="cost-row">
-                      <span className="cost-label">Costo Propio:</span>
-                      <div className="cost-values">
-                        <div className="cost-value best">
-                          <div dangerouslySetInnerHTML={{ __html: parseSumToLatex(node.own_cost.best) }} />
-                        </div>
-                        <div className="cost-value avg">
-                          <div dangerouslySetInnerHTML={{ __html: parseSumToLatex(node.own_cost.avg) }} />
-                        </div>
-                        <div className="cost-value worst">
-                          <div dangerouslySetInnerHTML={{ __html: parseSumToLatex(node.own_cost.worst) }} />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {node.loop_info && (
-                  <div className="loop-info">
-                    <strong>🔄 Info del Loop:</strong>
-                    <span>Variable: <code>{node.loop_info.var}</code></span>
-                    <span>Inicio: <code>{node.loop_info.start}</code></span>
-                    <span>Fin: <code>{node.loop_info.end}</code></span>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Costo Total */}
       {total && (

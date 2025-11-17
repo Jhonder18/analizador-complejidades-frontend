@@ -8,6 +8,7 @@ const Editor = forwardRef(({ onCodeChange }, ref) => {
   const [naturalInput, setNaturalInput] = useState('');
   const [codeInput, setCodeInput] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState('python');
+  const [algorithmType, setAlgorithmType] = useState('iterativo'); // 'iterativo' o 'recursivo'
   const { isDark } = useTheme();
 
   // Exponer función clear al componente padre
@@ -16,6 +17,7 @@ const Editor = forwardRef(({ onCodeChange }, ref) => {
       setNaturalInput('');
       setCodeInput('');
       setSelectedLanguage('python');
+      setAlgorithmType('iterativo');
       setActiveTab('natural');
       onCodeChange && onCodeChange({ type: 'natural', value: '', language: 'python' });
     }
@@ -42,207 +44,219 @@ const Editor = forwardRef(({ onCodeChange }, ref) => {
   const handleMonacoChange = (value) => {
     setCodeInput(value || '');
     onCodeChange && onCodeChange({ 
-      type: 'code', 
-      value: value || '', 
-      language: selectedLanguage 
+      type: 'pseudocode', 
+      value: value || ''
     });
   };
 
-  const handleLanguageChange = (event) => {
-    setSelectedLanguage(event.target.value);
-    onCodeChange && onCodeChange({ 
-      type: 'code', 
-      value: codeInput, 
-      language: event.target.value 
-    });
-  };
+  // Ejemplos de pseudocódigo en formato .lark
+  const getPseudocodeExamples = (exampleType) => {
+    const iterativeExamples = {
+      'busqueda-lineal': `busqueda_lineal(A, n, x)
+begin
+    for i 🡨 1 to n do
+    begin
+        if (A[i] = x) then
+        begin
+            return i
+        end
+    end
+    return -1
+end`,
 
-  const handleCodeFixed = (fixedCode) => {
-    setCodeInput(fixedCode);
-    onCodeChange && onCodeChange({ 
-      type: 'code', 
-      value: fixedCode, 
-      language: selectedLanguage 
-    });
-  };
+      'burbuja': `burbuja(A, n)
+begin
+    for i 🡨 1 to n-1 do
+    begin
+        for j 🡨 1 to n-i do
+        begin
+            if (A[j] > A[j+1]) then
+            begin
+                temp 🡨 A[j]
+                A[j] 🡨 A[j+1]
+                A[j+1] 🡨 temp
+            end
+        end
+    end
+end`,
 
-  const getDefaultCode = (language) => {
-    const templates = {
-      python: `# Escribe tu código Python aquí
-def ejemplo():
-    # Tu algoritmo aquí
-    pass`,
-      javascript: `// Escribe tu código JavaScript aquí
-function ejemplo() {
-    // Tu algoritmo aquí
-}`,
-      java: `// Escribe tu código Java aquí
-public class Ejemplo {
-    public static void main(String[] args) {
-        // Tu algoritmo aquí
-    }
-}`,
-      cpp: `// Escribe tu código C++ aquí
-#include <iostream>
-using namespace std;
+      'insercion': `insercion(A, n)
+begin
+    for i 🡨 2 to n do
+    begin
+        clave 🡨 A[i]
+        j 🡨 i - 1
+        while (j > 0 and A[j] > clave) do
+        begin
+            A[j+1] 🡨 A[j]
+            j 🡨 j - 1
+        end
+        A[j+1] 🡨 clave
+    end
+end`,
 
-int main() {
-    // Tu algoritmo aquí
-    return 0;
-}`,
-      c: `// Escribe tu código C aquí
-#include <stdio.h>
+      'seleccion': `seleccion(A, n)
+begin
+    for i 🡨 1 to n-1 do
+    begin
+        minimo 🡨 i
+        for j 🡨 i+1 to n do
+        begin
+            if (A[j] < A[minimo]) then
+            begin
+                minimo 🡨 j
+            end
+        end
+        if (minimo != i) then
+        begin
+            temp 🡨 A[i]
+            A[i] 🡨 A[minimo]
+            A[minimo] 🡨 temp
+        end
+    end
+end`,
 
-int main() {
-    // Tu algoritmo aquí
-    return 0;
-}`
+      'suma-matriz': `suma_matriz(A, n, m)
+begin
+    suma 🡨 0
+    for i 🡨 1 to n do
+    begin
+        for j 🡨 1 to m do
+        begin
+            suma 🡨 suma + A[i][j]
+        end
+    end
+    return suma
+end`,
+
+      'buscar-while': `buscar_while(A, n, x)
+begin
+    i 🡨 1
+    encontrado 🡨 false
+    while (i <= n and not encontrado) do
+    begin
+        if (A[i] = x) then
+        begin
+            encontrado 🡨 true
+        end
+        i 🡨 i + 1
+    end
+    if (encontrado) then
+    begin
+        return i - 1
+    end
+    else
+    begin
+        return -1
+    end
+end`,
+
+      'multiplicar-matrices': `multiplicar_matrices(A, B, n, m, p)
+begin
+    for i 🡨 1 to n do
+    begin
+        for j 🡨 1 to p do
+        begin
+            C[i][j] 🡨 0
+            for k 🡨 1 to m do
+            begin
+                C[i][j] 🡨 C[i][j] + A[i][k] * B[k][j]
+            end
+        end
+    end
+    return C
+end`,
+
+      'encontrar-maximo': `encontrar_maximo(A, n)
+begin
+    maximo 🡨 A[1]
+    for i 🡨 2 to n do
+    begin
+        if (A[i] > maximo) then
+        begin
+            maximo 🡨 A[i]
+        end
+    end
+    return maximo
+end`,
+
+      'contar-pares': `contar_pares(A, n)
+begin
+    contador 🡨 0
+    for i 🡨 1 to n do
+    begin
+        if (A[i] mod 2 = 0) then
+        begin
+            contador 🡨 contador + 1
+        end
+    end
+    return contador
+end`,
+
+      'buscar-par-suma': `buscar_par_suma(A, n, objetivo)
+begin
+    for i 🡨 1 to n-1 do
+    begin
+        for j 🡨 i+1 to n do
+        begin
+            if (A[i] + A[j] = objetivo) then
+            begin
+                return true
+            end
+        end
+    end
+    return false
+end`
     };
-    return templates[language] || '';
-  };
 
-  // Ejemplos predefinidos para demostración
-  const getExampleCode = (algorithmType, language) => {
-    const examples = {
-      'selection-sort': {
-        python: `def selection_sort(arr):
-    n = len(arr)
-    for i in range(n - 1):
-        min_index = i
-        for j in range(i + 1, n):
-            if arr[j] < arr[min_index]:
-                min_index = j
-        arr[i], arr[min_index] = arr[min_index], arr[i]
-    return arr`,
-
-        javascript: `function selectionSort(arr) {
-    const n = arr.length;
-    for (let i = 0; i < n - 1; i++) {
-        let minIndex = i;
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-        [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-    }
-    return arr;
-}`
-      },
-
-      'bubble-sort': {
-        python: `def bubble_sort(arr):
-    n = len(arr)
-    for i in range(n):
-        swapped = False
-        for j in range(0, n - i - 1):
-            if arr[j] > arr[j + 1]:
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
-                swapped = True
-        if not swapped:
-            break
-    return arr`,
-
-        javascript: `function bubbleSort(arr) {
-    const n = arr.length;
-    for (let i = 0; i < n; i++) {
-        let swapped = false;
-        for (let j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                swapped = true;
-            }
-        }
-        if (!swapped) break;
-    }
-    return arr;
-}`
-      },
-
-      'binary-search': {
-        python: `def binary_search(arr, target):
-    left, right = 0, len(arr) - 1
-    while left <= right:
-        mid = (left + right) // 2
-        if arr[mid] == target:
-            return mid
-        elif arr[mid] < target:
-            left = mid + 1
-        else:
-            right = mid - 1
-    return -1`,
-
-        javascript: `function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
-    }
-    return -1;
-}`
-      },
-
-      'fibonacci': {
-        python: `def fibonacci(n):
-    if n <= 1:
-        return n
-    return fibonacci(n - 1) + fibonacci(n - 2)`,
-
-        javascript: `function fibonacci(n) {
-    if (n <= 1) {
-        return n;
-    }
-    return fibonacci(n - 1) + fibonacci(n - 2);
-}`
-      }
+    const recursiveExamples = {
+      // Por ahora vacío, se completará después
     };
 
-    return examples[algorithmType]?.[language] || '';
+    return algorithmType === 'iterativo' 
+      ? (iterativeExamples[exampleType] || '')
+      : (recursiveExamples[exampleType] || '');
   };
 
   // Ejemplos de descripción en lenguaje natural
-  const getNaturalExamples = (algorithmType) => {
-    const examples = {
-      'selection-sort': `Dame el algoritmo de ordenamiento por selección`,
-
-      'bubble-sort': `Dame el algoritmo de ordenamiento burbuja`,
-
-      'binary-search': `Dame el algoritmo de búsqueda binaria`,
-
-      'merge-sort': `Dame el algoritmo de ordenamiento por mezcla`,
-
-      'quick-sort': `Dame el algoritmo de ordenamiento rápido`,
-
-      'fibonacci': `Dame el algoritmo de la secuencia de Fibonacci`
+  const getNaturalExamples = (exampleType) => {
+    const iterativeExamples = {
+      'busqueda-lineal': `Dame el algoritmo de búsqueda lineal`,
+      'burbuja': `Dame el algoritmo de ordenamiento burbuja`,
+      'insercion': `Dame el algoritmo de ordenamiento por inserción`,
+      'seleccion': `Dame el algoritmo de ordenamiento por selección`,
+      'suma-matriz': `Dame el algoritmo de suma de elementos en una matriz`,
+      'buscar-while': `Dame el algoritmo de búsqueda con while`,
+      'multiplicar-matrices': `Dame el algoritmo de multiplicación de matrices`,
+      'encontrar-maximo': `Dame el algoritmo para encontrar el máximo en un array`,
+      'contar-pares': `Dame el algoritmo para contar números pares en un array`,
+      'buscar-par-suma': `Dame el algoritmo para buscar un par de números que sumen un objetivo`
     };
 
-    return examples[algorithmType] || '';
+    const recursiveExamples = {
+      // Por ahora vacío
+    };
+
+    return algorithmType === 'iterativo' 
+      ? (iterativeExamples[exampleType] || '')
+      : (recursiveExamples[exampleType] || '');
   };
 
-  const loadExample = (algorithmType) => {
+  const loadExample = (exampleType) => {
     if (activeTab === 'natural') {
-      const example = getNaturalExamples(algorithmType);
+      const example = getNaturalExamples(exampleType);
       setNaturalInput(example);
       onCodeChange && onCodeChange({ 
         type: 'natural', 
-        value: example, 
-        language: selectedLanguage 
+        value: example
       });
     } else {
-      const example = getExampleCode(algorithmType, selectedLanguage);
+      const example = getPseudocodeExamples(exampleType);
       if (example) {
         setCodeInput(example);
         onCodeChange && onCodeChange({ 
-          type: 'code', 
-          value: example, 
-          language: selectedLanguage 
+          type: 'pseudocode', 
+          value: example
         });
       }
     }
@@ -262,64 +276,107 @@ int main() {
           className={`tab ${activeTab === 'code' ? 'active' : ''}`}
           onClick={() => handleTabChange('code')}
         >
-          Código
+          Pseudocódigo (.lark)
         </button>
       </div>
 
-      {/* Language Selector for Code Tab */}
-      {activeTab === 'code' && (
-        <div className="language-selector">
-          <label htmlFor="language-select">Lenguaje: </label>
-          <select 
-            id="language-select"
-            value={selectedLanguage} 
-            onChange={handleLanguageChange}
-            className="language-dropdown"
-          >
-            <option value="python">Python</option>
-            <option value="javascript">JavaScript</option>
-            <option value="java">Java</option>
-            <option value="cpp">C++</option>
-            <option value="c">C</option>
-          </select>
-        </div>
-      )}
+      {/* Algorithm Type Selector */}
+      <div className="algorithm-type-selector">
+        <label htmlFor="algorithm-type-select">Tipo de Algoritmo: </label>
+        <select 
+          id="algorithm-type-select"
+          value={algorithmType} 
+          onChange={(e) => setAlgorithmType(e.target.value)}
+          className="algorithm-type-dropdown"
+        >
+          <option value="iterativo">Iterativo</option>
+          <option value="recursivo">Recursivo</option>
+        </select>
+      </div>
 
       {/* Examples Section */}
       <div className="examples-section">
         <div className="examples-header">
-          <h4>Ejemplos Predefinidos:</h4>
+          <h4>Ejemplos Predefinidos {algorithmType === 'iterativo' ? '(Iterativos)' : '(Recursivos)'}:</h4>
         </div>
-        <div className="examples-buttons">
-          <button 
-            className="example-btn" 
-            onClick={() => loadExample('selection-sort')}
-            title="Cargar ejemplo de Selection Sort"
-          >
-            Selection Sort
-          </button>
-          <button 
-            className="example-btn" 
-            onClick={() => loadExample('bubble-sort')}
-            title="Cargar ejemplo de Bubble Sort"
-          >
-            Bubble Sort
-          </button>
-          <button 
-            className="example-btn" 
-            onClick={() => loadExample('binary-search')}
-            title="Cargar ejemplo de Binary Search"
-          >
-            Binary Search
-          </button>
-          <button 
-            className="example-btn" 
-            onClick={() => loadExample('fibonacci')}
-            title="Cargar ejemplo de Fibonacci"
-          >
-            Fibonacci
-          </button>
-        </div>
+        {algorithmType === 'iterativo' ? (
+          <div className="examples-buttons">
+            <button 
+              className="example-btn" 
+              onClick={() => loadExample('busqueda-lineal')}
+              title="Búsqueda Lineal - O(n)"
+            >
+              Búsqueda Lineal
+            </button>
+            <button 
+              className="example-btn" 
+              onClick={() => loadExample('burbuja')}
+              title="Ordenamiento Burbuja - O(n²)"
+            >
+              Burbuja
+            </button>
+            <button 
+              className="example-btn" 
+              onClick={() => loadExample('insercion')}
+              title="Ordenamiento por Inserción - O(n²)"
+            >
+              Inserción
+            </button>
+            <button 
+              className="example-btn" 
+              onClick={() => loadExample('seleccion')}
+              title="Ordenamiento por Selección - O(n²)"
+            >
+              Selección
+            </button>
+            <button 
+              className="example-btn" 
+              onClick={() => loadExample('suma-matriz')}
+              title="Suma de Matriz - O(n*m)"
+            >
+              Suma Matriz
+            </button>
+            <button 
+              className="example-btn" 
+              onClick={() => loadExample('buscar-while')}
+              title="Búsqueda con While - O(n)"
+            >
+              Búsqueda While
+            </button>
+            <button 
+              className="example-btn" 
+              onClick={() => loadExample('multiplicar-matrices')}
+              title="Multiplicación de Matrices - O(n³)"
+            >
+              Mult. Matrices
+            </button>
+            <button 
+              className="example-btn" 
+              onClick={() => loadExample('encontrar-maximo')}
+              title="Encontrar Máximo - O(n)"
+            >
+              Máximo
+            </button>
+            <button 
+              className="example-btn" 
+              onClick={() => loadExample('contar-pares')}
+              title="Contar Pares - O(n)"
+            >
+              Contar Pares
+            </button>
+            <button 
+              className="example-btn" 
+              onClick={() => loadExample('buscar-par-suma')}
+              title="Buscar Par de Suma - O(n²)"
+            >
+              Par Suma
+            </button>
+          </div>
+        ) : (
+          <div className="examples-placeholder">
+            <p>Los ejemplos recursivos estarán disponibles próximamente...</p>
+          </div>
+        )}
       </div>
 
       {/* Tab Content */}
@@ -335,10 +392,85 @@ int main() {
           <div className="monaco-editor-container">
             <MonacoEditor
               height="400px"
-              language={selectedLanguage}
-              value={codeInput || getDefaultCode(selectedLanguage)}
+              language="plaintext"
+              value={codeInput}
               onChange={handleMonacoChange}
               theme={isDark ? "vs-dark" : "vs-light"}
+              onMount={(editor, monaco) => {
+                // Registrar lenguaje personalizado para pseudocódigo
+                monaco.languages.register({ id: 'pseudocode' });
+                
+                // Definir tokens para resaltado de sintaxis
+                monaco.languages.setMonarchTokensProvider('pseudocode', {
+                  keywords: [
+                    'begin', 'end', 'if', 'then', 'else', 'for', 'to', 'do',
+                    'while', 'repeat', 'until', 'return', 'CALL', 'procedimiento',
+                    'accion', 'and', 'or', 'not', 'div', 'mod', 'Clase'
+                  ],
+                  
+                  operators: [
+                    '🡨', '=', '==', '!=', '≠', '<>', '<', '>', '≤', '>=', '≥', '<=',
+                    '+', '-', '*', '/', '┌', '┐', '└', '┘'
+                  ],
+                  
+                  constants: ['T', 'F', 'NULL'],
+                  
+                  tokenizer: {
+                    root: [
+                      // Comentarios con ►
+                      [/►.*$/, 'comment'],
+                      
+                      // Palabras clave
+                      [/\b(begin|end|if|then|else|for|to|do|while|repeat|until|return|CALL|procedimiento|accion|and|or|not|div|mod|Clase)\b/, 'keyword'],
+                      
+                      // Constantes
+                      [/\b(T|F|NULL)\b/, 'constant'],
+                      
+                      // Números
+                      [/\b\d+\.?\d*\b/, 'number'],
+                      
+                      // Operador de asignación especial
+                      [/🡨/, 'operator.special'],
+                      
+                      // Operadores
+                      [/[=<>!≤≥≠+\-*\/┌┐└┘]/, 'operator'],
+                      
+                      // Nombres de funciones
+                      [/\b[a-zA-Z_][a-zA-Z0-9_]*(?=\()/, 'function'],
+                      
+                      // Identificadores
+                      [/\b[a-zA-Z_][a-zA-Z0-9_]*\b/, 'identifier'],
+                      
+                      // Acceso a arrays
+                      [/\[|\]/, 'bracket'],
+                      
+                      // Paréntesis
+                      [/[()]/, 'delimiter.parenthesis'],
+                    ]
+                  }
+                });
+                
+                // Definir tema personalizado
+                monaco.editor.defineTheme('pseudocode-theme', {
+                  base: isDark ? 'vs-dark' : 'vs',
+                  inherit: true,
+                  rules: [
+                    { token: 'keyword', foreground: '569CD6', fontStyle: 'bold' },
+                    { token: 'comment', foreground: '6A9955', fontStyle: 'italic' },
+                    { token: 'operator.special', foreground: 'D16969', fontStyle: 'bold' },
+                    { token: 'operator', foreground: 'D4D4D4' },
+                    { token: 'function', foreground: 'DCDCAA' },
+                    { token: 'constant', foreground: '4FC1FF' },
+                    { token: 'number', foreground: 'B5CEA8' },
+                    { token: 'identifier', foreground: '9CDCFE' },
+                  ],
+                  colors: {}
+                });
+                
+                // Aplicar el lenguaje personalizado
+                monaco.editor.setModelLanguage(editor.getModel(), 'pseudocode');
+                monaco.editor.setTheme('pseudocode-theme');
+              }}
               options={{
                 minimap: { enabled: false },
                 scrollBeyondLastLine: false,
@@ -351,13 +483,17 @@ int main() {
                 },
                 automaticLayout: true,
                 wordWrap: 'on',
-                tabSize: 2,
+                tabSize: 4,
                 insertSpaces: true,
                 renderLineHighlight: 'all',
                 selectOnLineNumbers: true,
                 mouseWheelZoom: true,
                 cursorBlinking: 'blink',
-                cursorStyle: 'line'
+                cursorStyle: 'line',
+                suggest: {
+                  showKeywords: true,
+                  showSnippets: true
+                }
               }}
             />
           </div>

@@ -5,9 +5,11 @@
 ![React](https://img.shields.io/badge/React-19.1.1-61dafb?style=for-the-badge&logo=react)
 ![Vite](https://img.shields.io/badge/Vite-7.1.7-646cff?style=for-the-badge&logo=vite)
 ![Monaco Editor](https://img.shields.io/badge/Monaco_Editor-4.7.0-007acc?style=for-the-badge&logo=visual-studio-code)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.18-38bdf8?style=for-the-badge&logo=tailwind-css)
+![Mermaid](https://img.shields.io/badge/Mermaid-11.12.2-ff3670?style=for-the-badge&logo=mermaid)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-**Una aplicación web moderna para analizar la complejidad algorítmica con editor de código integrado**
+**Una aplicación web moderna impulsada por IA para analizar la complejidad algorítmica con visualizaciones interactivas**
 
 [🚀 Demo en Vivo](#demo) • [📖 Documentación](#documentación) • [🔧 Instalación](#instalación) • [🤝 Contribuir](#contribuir)
 
@@ -23,10 +25,12 @@ El **Analizador de Complejidades Algorítmicas** es una herramienta educativa y 
 
 - 🖥️ **Editor de Código Avanzado**: Monaco Editor (mismo editor de VS Code) con syntax highlighting
 - 📊 **Análisis Detallado**: Evaluación completa de complejidad temporal y espacial
-- 🎯 **Casos de Prueba**: Análisis de mejor caso, caso promedio y peor caso
+- 🎯 **Análisis Dual**: Soporte para algoritmos iterativos y recursivos
+- 🌲 **Visualización de Árboles**: Diagramas interactivos de recursión con Mermaid
+- 🔢 **Renderizado Matemático**: Fórmulas y ecuaciones con KaTeX
 - 🔍 **Pseudocódigo**: Generación automática con análisis de costos por línea
-- 🌙 **Tema Oscuro/Claro**: Interfaz adaptable con persistencia de preferencias
-- 🤖 **IA Integrada**: Botón "Arreglar con IA" para optimización automática de código
+- 🌙 **Diseño Moderno**: Interfaz oscura profesional con Tailwind CSS
+- 🤖 **IA Integrada**: Análisis impulsado por LLM para mayor precisión
 - 📱 **Responsive Design**: Funciona perfectamente en desktop, tablet y móvil
 - ⚡ **Rendimiento Optimizado**: Construido con Vite para carga ultrarrápida
 
@@ -76,7 +80,7 @@ cd analizador-complejidades-frontend
 npm install
 
 # Instalar dependencias (opción 2 - manual)
-npm install @monaco-editor/react@^4.7.0 react@^19.1.1 react-dom@^19.1.1 react-router-dom@^7.9.3
+npm install @monaco-editor/react@^4.7.0 katex@^0.16.25 mermaid@^11.12.2 react@^19.1.1 react-dom@^19.1.1 react-katex@^3.1.0 react-router-dom@^7.9.3
 
 # Iniciar servidor de desarrollo
 npm run dev
@@ -144,6 +148,9 @@ src/
 | **React** | 19.1.1 | Framework frontend |
 | **Vite** | 7.1.7 | Build tool y dev server |
 | **Monaco Editor** | 4.7.0 | Editor de código |
+| **Tailwind CSS** | 3.4.18 | Framework CSS utility-first |
+| **Mermaid** | 11.12.2 | Generación de diagramas |
+| **KaTeX** | 0.16.25 | Renderizado de matemáticas |
 | **React Router** | 7.9.3 | Enrutamiento |
 | **ESLint** | 9.36.0 | Linting y calidad de código |
 
@@ -154,6 +161,9 @@ src/
 - 💾 **Espacial**: Análisis de memoria utilizada
 - 📈 **Casos**: Mejor, promedio y peor caso
 - 🔍 **Pseudocódigo**: Generación automática con costos por línea
+- 🌲 **Árboles Recursivos**: Visualización interactiva de llamadas recursivas
+- 🔢 **Relaciones de Recurrencia**: Análisis con Teorema Maestro
+- 📝 **Pasos Detallados**: Explicación paso a paso de la resolución
 
 ### Editor de Código
 - 🎨 **Syntax Highlighting** para múltiples lenguajes
@@ -225,11 +235,14 @@ npm run dev
 
 ### 🎯 Próximas Funcionalidades
 
+- [x] **Visualización de Recursión**: Árboles interactivos con Mermaid ✅
+- [x] **Renderizado Matemático**: Fórmulas con KaTeX ✅
+- [x] **Diseño Moderno**: Interfaz oscura con Tailwind CSS ✅
 - [ ] **Análisis de Memoria**: Visualización detallada del uso de memoria
 - [ ] **Grafos de Complejidad**: Representación visual de crecimiento
 - [ ] **Comparador de Algoritmos**: Análisis lado a lado
 - [ ] **Exportar Reportes**: PDF, JSON, HTML
-- [ ] **API Backend**: Análisis más profundo con IA
+- [ ] **Más Algoritmos Recursivos**: Factorial, Torres de Hanoi, Búsqueda Binaria
 - [ ] **Colaboración**: Compartir análisis con otros usuarios
 - [ ] **Móvil**: Aplicación nativa React Native
 

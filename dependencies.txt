@@ -2,37 +2,44 @@
 
 ## Instalación Rápida
 Para instalar todas las dependencias de una vez:
-```
-npm install @monaco-editor/react@^4.7.0 react@^19.1.1 react-dom@^19.1.1 react-router-dom@^7.9.3 @eslint/js@^9.36.0 @types/react@^19.1.13 @types/react-dom@^19.1.9 @vitejs/plugin-react@^5.0.3 eslint@^9.36.0 eslint-plugin-react-hooks@^5.2.0 eslint-plugin-react-refresh@^0.4.20 globals@^16.4.0 vite@^7.1.7 --save-dev @eslint/js @types/react @types/react-dom @vitejs/plugin-react eslint eslint-plugin-react-hooks eslint-plugin-react-refresh globals vite
+```bash
+npm install
 ```
 
 ## Dependencias Principales (dependencies)
 - @monaco-editor/react@^4.7.0  # Editor de código Monaco
-- react@^19.1.1               # Framework React
-- react-dom@^19.1.1           # React DOM
-- react-router-dom@^7.9.3     # Enrutamiento para React
+- katex@^0.16.25               # Renderizado de fórmulas matemáticas
+- mermaid@^11.12.2             # Generación de diagramas (árboles recursivos)
+- react@^19.1.1                # Framework React
+- react-dom@^19.1.1            # React DOM
+- react-katex@^3.1.0           # Componente React para KaTeX
+- react-router-dom@^7.9.3      # Enrutamiento para React
 
 ## Dependencias de Desarrollo (devDependencies)
 - @eslint/js@^9.36.0                    # ESLint JavaScript
+- @tailwindcss/postcss@^4.1.17          # PostCSS plugin para Tailwind
 - @types/react@^19.1.13                 # Tipos TypeScript para React
 - @types/react-dom@^19.1.9              # Tipos TypeScript para React DOM
 - @vitejs/plugin-react@^5.0.3           # Plugin Vite para React
+- autoprefixer@^10.4.22                 # PostCSS plugin para autoprefixing
 - eslint@^9.36.0                        # Linter ESLint
 - eslint-plugin-react-hooks@^5.2.0      # Plugin ESLint para React Hooks
 - eslint-plugin-react-refresh@^0.4.20   # Plugin ESLint para React Refresh
 - globals@^16.4.0                       # Variables globales
+- postcss@^8.5.6                        # PostCSS procesador CSS
+- tailwindcss@^3.4.18                   # Framework CSS utility-first
 - vite@^7.1.7                           # Build tool y dev server
 
 ## Comandos de Instalación Separados
 
 ### Solo dependencias principales:
-```
-npm install @monaco-editor/react@^4.7.0 react@^19.1.1 react-dom@^19.1.1 react-router-dom@^7.9.3
+```bash
+npm install @monaco-editor/react@^4.7.0 katex@^0.16.25 mermaid@^11.12.2 react@^19.1.1 react-dom@^19.1.1 react-katex@^3.1.0 react-router-dom@^7.9.3
 ```
 
 ### Solo dependencias de desarrollo:
-```
-npm install --save-dev @eslint/js@^9.36.0 @types/react@^19.1.13 @types/react-dom@^19.1.9 @vitejs/plugin-react@^5.0.3 eslint@^9.36.0 eslint-plugin-react-hooks@^5.2.0 eslint-plugin-react-refresh@^0.4.20 globals@^16.4.0 vite@^7.1.7
+```bash
+npm install --save-dev @eslint/js@^9.36.0 @tailwindcss/postcss@^4.1.17 @types/react@^19.1.13 @types/react-dom@^19.1.9 @vitejs/plugin-react@^5.0.3 autoprefixer@^10.4.22 eslint@^9.36.0 eslint-plugin-react-hooks@^5.2.0 eslint-plugin-react-refresh@^0.4.20 globals@^16.4.0 postcss@^8.5.6 tailwindcss@^3.4.18 vite@^7.1.7
 ```
 
 ## Instrucciones de Instalación Completa

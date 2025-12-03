@@ -1,48 +1,60 @@
 import { Link, useLocation } from 'react-router-dom';
-import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
   const location = useLocation();
 
   const isActive = (path) => {
-    return location.pathname === path ? 'nav-link active' : 'nav-link';
+    return location.pathname === path;
   };
 
   return (
-    <nav className="navbar">
-      <div className="nav-container">
-        <Link to="/" className="nav-logo">
-          <h2>Analizador de Complejidades</h2>
-        </Link>
-        
-        <ul className="nav-menu">
-          <li className="nav-item">
-            <Link to="/" className={isActive('/')}>
+    <header className="sticky top-0 z-50 w-full px-4 sm:px-6 lg:px-8 bg-black/50 backdrop-blur-lg border-b border-white/10">
+      <div className="mx-auto max-w-7xl">
+        <div className="flex h-20 items-center justify-between">
+          {/* Logo Section */}
+          <Link to="/" className="flex items-center gap-4">
+            <span className="material-symbols-outlined text-2xl text-[#9013FE]">
+              spark
+            </span>
+            <h1 className="text-xl font-bold text-white">Analizador de Complejidades</h1>
+          </Link>
+
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center gap-10 text-sm font-medium">
+            <Link
+              to="/"
+              className={`relative transition-colors duration-300 ${
+                isActive('/')
+                  ? 'text-gray-300 hover:text-white active-link'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
               Inicio
             </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/analyzer" className={isActive('/analyzer')}>
+            <Link
+              to="/analyzer"
+              className={`relative transition-colors duration-300 ${
+                isActive('/analyzer')
+                  ? 'text-gray-300 hover:text-white active-link'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
               Analizador
             </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/docs" className={isActive('/docs')}>
+            <Link
+              to="/docs"
+              className={`relative transition-colors duration-300 ${
+                isActive('/docs')
+                  ? 'text-gray-300 hover:text-white active-link'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
               Documentación
             </Link>
-          </li>
-        </ul>
-
-        <div className="nav-actions">
-          <ThemeToggle />
-          <div className="nav-toggle">
-            <span className="bar"></span>
-            <span className="bar"></span>
-            <span className="bar"></span>
-          </div>
+          </nav>
         </div>
       </div>
-    </nav>
+    </header>
   );
 };
 

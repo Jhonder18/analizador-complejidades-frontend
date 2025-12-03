@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import MonacoEditor from '@monaco-editor/react';
-import { useTheme } from '../contexts/ThemeContext';
 import '../styles/ComplexityAnalysisNew.css';
 
 const ComplexityAnalysis = ({ analysisResult }) => {
   const [expandedNodes, setExpandedNodes] = useState(new Set());
-  const { isDark } = useTheme();
 
   const toggleNode = (nodeId) => {
     const newExpanded = new Set(expandedNodes);
@@ -159,7 +157,7 @@ const ComplexityAnalysis = ({ analysisResult }) => {
               height="400px"
               language="json"
               value={JSON.stringify(ast, null, 2)}
-              theme={isDark ? "vs-dark" : "vs-light"}
+              theme="vs-dark"
               options={{
                 readOnly: true,
                 minimap: { enabled: true },

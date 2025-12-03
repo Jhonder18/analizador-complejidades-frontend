@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import Editor from '@monaco-editor/react';
-import { useTheme } from '../contexts/ThemeContext';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import '../styles/CostsAnalysis.css';
 
 export const CostsAnalysis = ({ costs, pseudocode }) => {
   const [viewMode] = useState('per-line'); // Solo mostrar 'per-line'
-  const { theme } = useTheme();
 
   // Función para convertir expresiones matemáticas a LaTeX
   const parseSumToLatex = (text) => {
@@ -197,7 +195,7 @@ export const CostsAnalysis = ({ costs, pseudocode }) => {
               height="300px"
               language="plaintext"
               value={pseudocode}
-              theme={theme === 'dark' ? 'vs-dark' : 'light'}
+              theme="vs-dark"
               options={{
                 readOnly: true,
                 minimap: { enabled: false },

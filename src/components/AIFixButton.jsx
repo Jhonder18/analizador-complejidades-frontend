@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { useTheme } from '../contexts/ThemeContext';
 
 const AIFixButton = ({ code, language, onCodeFixed }) => {
   const [isFixing, setIsFixing] = useState(false);
-  const { isDark } = useTheme();
 
   const handleFixCode = async () => {
     if (!code.trim()) return;

@@ -1,6 +1,5 @@
 import { useState, useImperativeHandle, forwardRef } from 'react';
 import MonacoEditor from '@monaco-editor/react';
-import { useTheme } from '../contexts/ThemeContext';
 import AIFixButton from './AIFixButton';
 
 const Editor = forwardRef(({ onCodeChange }, ref) => {
@@ -9,7 +8,6 @@ const Editor = forwardRef(({ onCodeChange }, ref) => {
   const [codeInput, setCodeInput] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState('python');
   const [algorithmType, setAlgorithmType] = useState('iterativo'); // 'iterativo' o 'recursivo'
-  const { isDark } = useTheme();
 
   // Exponer función clear al componente padre
   useImperativeHandle(ref, () => ({
@@ -395,7 +393,7 @@ end`
               language="plaintext"
               value={codeInput}
               onChange={handleMonacoChange}
-              theme={isDark ? "vs-dark" : "vs-light"}
+              theme="vs-dark"
               onMount={(editor, monaco) => {
                 // Registrar lenguaje personalizado para pseudocódigo
                 monaco.languages.register({ id: 'pseudocode' });
@@ -452,7 +450,7 @@ end`
                 
                 // Definir tema personalizado
                 monaco.editor.defineTheme('pseudocode-theme', {
-                  base: isDark ? 'vs-dark' : 'vs',
+                  base: 'vs-dark',
                   inherit: true,
                   rules: [
                     { token: 'keyword', foreground: '569CD6', fontStyle: 'bold' },

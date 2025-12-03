@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import MonacoEditor from '@monaco-editor/react';
-import { useTheme } from '../contexts/ThemeContext';
 import ComplexityAnalysis from './ComplexityAnalysisNew';
 import SolutionSteps from './SolutionSteps';
 import CostsAnalysis from './CostsAnalysis';
@@ -10,7 +9,6 @@ import 'katex/dist/katex.min.css';
 
 const OutputPanel = ({ analysisResult, loading }) => {
   const [activeTab, setActiveTab] = useState('complexity');
-  const { isDark } = useTheme();
 
   // Función para convertir expresiones matemáticas a LaTeX
   const parseSumToLatex = (text) => {
@@ -241,7 +239,7 @@ const OutputPanel = ({ analysisResult, loading }) => {
                     height="400px"
                     language="plaintext"
                     value={analysisResult.validation.codigo_corregido}
-                    theme={isDark ? "vs-dark" : "vs-light"}
+                    theme="vs-dark"
                     options={{
                       readOnly: true,
                       minimap: { enabled: true },
@@ -373,7 +371,7 @@ const OutputPanel = ({ analysisResult, loading }) => {
                   height="200px"
                   language="plaintext"
                   value={analysisResult.input_text}
-                  theme={isDark ? "vs-dark" : "vs-light"}
+                  theme="vs-dark"
                   options={{
                     readOnly: true,
                     minimap: { enabled: false },

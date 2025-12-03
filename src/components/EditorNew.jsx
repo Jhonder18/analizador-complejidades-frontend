@@ -1,6 +1,5 @@
 import { useState, useImperativeHandle, forwardRef } from 'react';
 import MonacoEditor from '@monaco-editor/react';
-import { useTheme } from '../contexts/ThemeContext';
 import AIFixButton from './AIFixButton';
 
 const Editor = forwardRef(({ onCodeChange }, ref) => {
@@ -8,7 +7,6 @@ const Editor = forwardRef(({ onCodeChange }, ref) => {
   const [naturalInput, setNaturalInput] = useState('');
   const [codeInput, setCodeInput] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState('python');
-  const { isDark } = useTheme();
 
   // Exponer función clear al componente padre
   useImperativeHandle(ref, () => ({
@@ -161,7 +159,7 @@ int main() {
               language={selectedLanguage}
               value={codeInput || getDefaultCode(selectedLanguage)}
               onChange={handleMonacoChange}
-              theme={isDark ? "vs-dark" : "vs-light"}
+              theme="vs-dark"
               options={{
                 minimap: { enabled: false },
                 scrollBeyondLastLine: false,

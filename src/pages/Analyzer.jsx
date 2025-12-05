@@ -3,7 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import MonacoEditor from '@monaco-editor/react';
 import LoadingAnimation from '../components/LoadingAnimation';
 import { analyzeComplexity } from '../services/api';
-import { getFibonacciMockData, isFibonacciCode } from '../data/fibonacciMock';
+// Mock deshabilitado - usando backend real
+// import { getFibonacciMockData, isFibonacciCode } from '../data/fibonacciMock';
 
 const Analyzer = () => {
   const [loading, setLoading] = useState(false);
@@ -37,48 +38,26 @@ const Analyzer = () => {
     setError(null);
     
     try {
-      // Detectar si es Fibonacci y usar datos mockeados
-      if (isFibonacciCode(inputValue)) {
-        console.log('Fibonacci detectado - usando datos mockeados');
-        
-        // Simular tiempo de análisis
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        const mockResult = getFibonacciMockData(4); // Valor inicial de n=4
-        
-        navigate('/results', {
-          state: {
-            analysisResult: mockResult,
-            inputData: {
-              type: activeTab,
-              value: inputValue,
-              algorithmType: 'recursivo',
-              isMocked: true
-            }
+      // Análisis con la API real (mock deshabilitado)
+      const result = await analyzeComplexity({
+        input: inputValue,
+        text: inputValue,
+        language_hint: 'es'
+      });
+      
+      console.log('Analysis result:', result);
+      
+      navigate('/results', {
+        state: {
+          analysisResult: result,
+          inputData: {
+            type: activeTab,
+            value: inputValue,
+            algorithmType: result.mode || algorithmType,
+            isMocked: false
           }
-        });
-      } else {
-        // Análisis normal con la API
-        const result = await analyzeComplexity({
-          input: inputValue,
-          text: inputValue,
-          language_hint: 'es'
-        });
-        
-        console.log('Analysis result:', result);
-        
-        navigate('/results', {
-          state: {
-            analysisResult: result,
-            inputData: {
-              type: activeTab,
-              value: inputValue,
-              algorithmType: algorithmType,
-              isMocked: false
-            }
-          }
-        });
-      }
+        }
+      });
     } catch (err) {
       setError('Error al analizar el código: ' + (err.message || 'Error desconocido'));
       console.error('Analysis error:', err);

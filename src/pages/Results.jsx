@@ -1,23 +1,73 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import MonacoEditor from '@monaco-editor/react';
 import ReactMarkdown from 'react-markdown';
 import katex from 'katex';
+import mermaid from 'mermaid';
 import 'katex/dist/katex.min.css';
 import RecursiveTreeViewer from '../components/RecursiveTreeViewer';
-import { getFibonacciMockData, generateFibonacciTreeData } from '../data/fibonacciMock';
+
+// Inicializar Mermaid para tema oscuro
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'dark',
+  themeVariables: {
+    primaryColor: '#6366f1',
+    primaryTextColor: '#fff',
+    primaryBorderColor: '#818cf8',
+    lineColor: '#6b7280',
+    secondaryColor: '#1e1b4b',
+    tertiaryColor: '#312e81',
+    background: '#0f0f23',
+    mainBkg: '#1e1b4b',
+    secondBkg: '#312e81',
+    textColor: '#e0e7ff',
+    fontSize: '12px',
+    nodeTextColor: '#fff'
+  },
+  flowchart: {
+    htmlLabels: true,
+    curve: 'basis',
+    padding: 20,
+    nodeSpacing: 50,
+    rankSpacing: 60
+  }
+});
 
 const Results = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { analysisResult: initialResult, inputData } = location.state || {};
   const [analysisResult, setAnalysisResult] = useState(initialResult);
+  const mermaidRef = useRef(null);
 
   useEffect(() => {
     if (!initialResult) {
       navigate('/analyzer', { replace: true });
     }
   }, [initialResult, navigate]);
+
+  // Renderizar diagrama Mermaid cuando esté disponible
+  useEffect(() => {
+    const renderMermaidDiagram = async () => {
+      const diagram = analysisResult?.mermaid_diagram || analysisResult?.recursion_tree?.mermaid_diagram;
+      if (diagram && mermaidRef.current) {
+        try {
+          mermaidRef.current.innerHTML = '';
+          const id = `mermaid-${Date.now()}`;
+          const { svg } = await mermaid.render(id, diagram);
+          mermaidRef.current.innerHTML = svg;
+        } catch (error) {
+          console.error('Error rendering Mermaid diagram:', error);
+          mermaidRef.current.innerHTML = '<p class="text-red-400 p-4">Error al renderizar el diagrama</p>';
+        }
+      }
+    };
+    
+    if (analysisResult) {
+      renderMermaidDiagram();
+    }
+  }, [analysisResult]);
 
   if (!initialResult) {
     return null;
@@ -27,17 +77,18 @@ const Results = () => {
     navigate('/analyzer');
   };
 
+  // Handler para cambio de N en el árbol recursivo (para el componente legacy)
   const handleNChange = (newN) => {
-    // Solo actualizar si es un análisis mockeado (recursivo)
-    if (inputData?.isMocked) {
-      const newMockData = getFibonacciMockData(newN);
-      setAnalysisResult(newMockData);
-    }
+    console.log('N changed to:', newN);
+    // En la versión actual, el árbol se renderiza en el servidor
+    // Este handler puede usarse para futuras implementaciones interactivas
   };
 
   const pseudocode = analysisResult.pseudocode || '';
-  const lineCount = pseudocode ? pseudocode.split('\n').length : 0;
-  const isRecursive = analysisResult.mode === 'recursivo' || inputData?.isMocked;
+  const lineCount = pseudocode ? pseudocode.split('\n').filter(l => l.trim()).length : 0;
+  const isRecursive = analysisResult.mode === 'recursivo' || 
+                      analysisResult.recurrence || 
+                      analysisResult.recursion_tree;
 
   // Función para convertir expresiones matemáticas a LaTeX
   const parseSumToLatex = (text) => {
@@ -302,8 +353,222 @@ const Results = () => {
               </div>
             )}
 
-            {/* Análisis Recursivo */}
-            {isRecursive && analysisResult.solution?.recurrence && (
+            {/* Análisis Recursivo - Usando estructura real del backend */}
+            {isRecursive && analysisResult.recurrence && (
+              <div>
+                <h2 className="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] pb-3">
+                  Análisis de Recurrencia
+                </h2>
+                
+                {/* Ecuación de Recurrencia */}
+                <div className="mb-6 p-6 rounded-xl bg-[#1c1c26] border border-primary/30">
+                  <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-primary">functions</span>
+                    Ecuación de Recurrencia
+                  </h3>
+                  <div className="p-4 bg-[#0D0D1A] rounded-lg border border-white/10 mb-4">
+                    <div 
+                      className="text-white text-xl font-katex text-center"
+                      dangerouslySetInnerHTML={{ __html: renderMath(analysisResult.recurrence.raw) }}
+                    />
+                  </div>
+                  
+                  {/* Casos Base */}
+                  {analysisResult.recurrence.base_cases && analysisResult.recurrence.base_cases.length > 0 && (
+                    <div className="mt-4">
+                      <p className="text-sm text-[#9d9db8] mb-2">Casos Base:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {analysisResult.recurrence.base_cases.map((bc, idx) => (
+                          <div key={idx} className="px-4 py-2 bg-[#0D0D1A] rounded-lg border border-white/10">
+                            <span className="text-white text-lg">{bc}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Clasificación */}
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <span className="px-3 py-1.5 bg-primary/20 text-primary rounded-full text-sm font-medium">
+                      {analysisResult.recurrence.classification}
+                    </span>
+                    {analysisResult.recurrence.parameters?.recurrence_type && (
+                      <span className="px-3 py-1.5 bg-blue-500/20 text-blue-400 rounded-full text-sm font-medium capitalize">
+                        {analysisResult.recurrence.parameters.recurrence_type.replace(/_/g, ' ')}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Método de Resolución */}
+                {analysisResult.recurrence.methods_tried && analysisResult.recurrence.methods_tried.length > 0 && (
+                  <div className="mb-6 p-6 rounded-xl bg-[#1c1c26] border border-white/10">
+                    <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                      <span className="material-symbols-outlined text-primary">school</span>
+                      Método: {analysisResult.recurrence.best_method?.replace(/_/g, ' ').toUpperCase()}
+                    </h3>
+                    
+                    {analysisResult.recurrence.methods_tried.filter(m => m.applicable).map((method, idx) => (
+                      <div key={idx} className="space-y-4">
+                        <div className="space-y-2">
+                          {method.steps.map((step, stepIdx) => (
+                            <div key={stepIdx} className="p-3 bg-[#0D0D1A] rounded-lg border border-white/10 flex items-start gap-3">
+                              <span className="text-primary font-bold text-sm mt-0.5">{stepIdx + 1}.</span>
+                              <p className="text-[#9d9db8] text-sm">{step}</p>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="p-4 bg-green-500/10 rounded-lg border border-green-500/30 flex items-center gap-3">
+                          <span className="material-symbols-outlined text-green-400">check_circle</span>
+                          <div>
+                            <span className="text-green-300 text-sm">Resultado:</span>
+                            <span className="text-green-400 font-bold text-lg ml-2">{method.result}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Solución Final */}
+                {analysisResult.recurrence.final_solution && (
+                  <div className="mb-6 p-6 rounded-xl bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/30">
+                    <h3 className="text-white font-bold text-lg mb-3 flex items-center gap-2">
+                      <span className="material-symbols-outlined text-green-400">verified</span>
+                      Solución Final
+                    </h3>
+                    <div className="text-center">
+                      <span className="text-green-400 text-3xl font-bold">{analysisResult.recurrence.final_solution}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Árbol de Recursión por Niveles */}
+                {analysisResult.recursion_tree && (
+                  <div className="mb-6 p-6 rounded-xl bg-[#1c1c26] border border-white/10">
+                    <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                      <span className="material-symbols-outlined text-primary">account_tree</span>
+                      Árbol de Recursión
+                    </h3>
+                    
+                    {/* Estadísticas del árbol */}
+                    <div className="grid grid-cols-3 gap-3 mb-4">
+                      <div className="p-3 bg-[#0D0D1A] rounded-lg border border-white/10 text-center">
+                        <p className="text-xs text-[#9d9db8] mb-1">Altura</p>
+                        <p className="text-white font-bold">{analysisResult.recursion_tree.height}</p>
+                      </div>
+                      <div className="p-3 bg-[#0D0D1A] rounded-lg border border-white/10 text-center">
+                        <p className="text-xs text-[#9d9db8] mb-1">Total Nodos</p>
+                        <p className="text-white font-bold text-sm">{analysisResult.recursion_tree.total_nodes}</p>
+                      </div>
+                      <div className="p-3 bg-primary/20 rounded-lg border border-primary/30 text-center">
+                        <p className="text-xs text-primary/80 mb-1">Costo Total</p>
+                        <p className="text-primary font-bold">{analysisResult.recursion_tree.total_cost}</p>
+                      </div>
+                    </div>
+                    
+                    {/* Tabla de niveles */}
+                    {analysisResult.recursion_tree.levels && (
+                      <div className="overflow-x-auto mb-4">
+                        <table className="min-w-full text-sm text-left text-[#9d9db8]">
+                          <thead className="bg-white/5 text-xs text-white uppercase">
+                            <tr>
+                              <th className="px-4 py-2">Nivel</th>
+                              <th className="px-4 py-2"># Nodos</th>
+                              <th className="px-4 py-2">Tamaño</th>
+                              <th className="px-4 py-2">Costo/Nodo</th>
+                              <th className="px-4 py-2">Costo Total</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-white/10">
+                            {analysisResult.recursion_tree.levels.map((level, idx) => (
+                              <tr key={idx} className={idx % 2 === 0 ? '' : 'bg-white/5'}>
+                                <td className="px-4 py-2 font-mono text-primary">{level.level}</td>
+                                <td className="px-4 py-2 font-mono">{level.num_nodes}</td>
+                                <td className="px-4 py-2 font-mono">{level.problem_size}</td>
+                                <td className="px-4 py-2 font-mono">{level.cost_per_node}</td>
+                                <td className="px-4 py-2 font-mono text-blue-400">{level.total_level_cost}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                    
+                    {/* Diagrama Mermaid */}
+                    <div className="mt-4">
+                      <p className="text-sm text-[#9d9db8] mb-2">Visualización del Árbol:</p>
+                      <div 
+                        ref={mermaidRef} 
+                        className="bg-[#0D0D1A] rounded-lg border border-white/10 p-4 overflow-x-auto min-h-[200px] flex items-center justify-center"
+                      >
+                        <p className="text-gray-500">Cargando diagrama...</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Análisis de Espacio */}
+                {analysisResult.space_analysis && (
+                  <div className="mb-6 p-6 rounded-xl bg-[#1c1c26] border border-white/10">
+                    <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                      <span className="material-symbols-outlined text-primary">memory</span>
+                      Análisis de Espacio
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 bg-[#0D0D1A] rounded-lg border border-white/10">
+                        <p className="text-xs text-[#9d9db8] mb-1">Profundidad Recursión</p>
+                        <p className="text-white font-bold">{analysisResult.space_analysis.recursion_depth}</p>
+                      </div>
+                      <div className="p-3 bg-[#0D0D1A] rounded-lg border border-white/10">
+                        <p className="text-xs text-[#9d9db8] mb-1">Tamaño Stack Frame</p>
+                        <p className="text-white font-bold">{analysisResult.space_analysis.stack_frame_size}</p>
+                      </div>
+                      <div className="p-3 bg-[#0D0D1A] rounded-lg border border-white/10">
+                        <p className="text-xs text-[#9d9db8] mb-1">Espacio Auxiliar</p>
+                        <p className="text-white font-bold">{analysisResult.space_analysis.auxiliary_space}</p>
+                      </div>
+                      <div className="p-3 bg-purple-500/20 rounded-lg border border-purple-500/30">
+                        <p className="text-xs text-purple-300 mb-1">Espacio Total</p>
+                        <p className="text-purple-400 font-bold">{analysisResult.space_analysis.total_space}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Razonamiento Detallado */}
+                {analysisResult.razonamiento && analysisResult.razonamiento.length > 0 && (
+                  <div className="mb-6">
+                    <details className="p-6 rounded-xl bg-[#1c1c26] border border-white/10">
+                      <summary className="text-white font-bold text-lg cursor-pointer flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary">psychology</span>
+                        Ver Razonamiento Completo
+                      </summary>
+                      <div className="mt-4 p-4 bg-[#0D0D1A] rounded-lg border border-white/10 font-mono text-sm max-h-80 overflow-y-auto">
+                        {analysisResult.razonamiento.map((linea, idx) => {
+                          // Colorear según el tipo de línea
+                          let className = "text-[#9d9db8]";
+                          if (linea.includes('═══')) className = "text-primary font-bold mt-2";
+                          else if (linea.startsWith('✓')) className = "text-green-400";
+                          else if (linea.startsWith('•')) className = "text-blue-400 ml-4";
+                          else if (linea.startsWith('→')) className = "text-yellow-400";
+                          else if (linea.includes('---')) className = "text-purple-400 font-semibold";
+                          
+                          return (
+                            <p key={idx} className={className}>
+                              {linea || '\u00A0'}
+                            </p>
+                          );
+                        })}
+                      </div>
+                    </details>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Análisis Recursivo Legacy - Para datos mockeados o estructura vieja */}
+            {isRecursive && !analysisResult.recurrence && analysisResult.solution?.recurrence && (
               <div>
                 <h2 className="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] pb-3">
                   Análisis de Recurrencia

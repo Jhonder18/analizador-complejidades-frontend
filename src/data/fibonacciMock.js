@@ -44,6 +44,7 @@ export const generateFibonacciTreeData = generateFibonacciTree;
 // Mock data para el análisis de Fibonacci recursivo
 export const getFibonacciMockData = (n = 4) => {
   return {
+    nl_description: "Algoritmo recursivo de Fibonacci",
     pseudocode: `fibonacci(n)
 begin
     if (n <= 1) then
@@ -55,22 +56,36 @@ begin
         return fibonacci(n-1) + fibonacci(n-2)
     end
 end`,
-    validation: {
-      is_valid: true,
-      codigo_corregido: `fibonacci(n)
-begin
-    if (n <= 1) then
-    begin
-        return n
-    end
-    else
-    begin
-        return fibonacci(n-1) + fibonacci(n-2)
-    end
-end`,
-      cambios: []
+    mode: "recursivo",
+    ast: [
+      {
+        "fibonacci": {
+          "variables": [["n", ""]],
+          "code": {
+            "if:n <= 1": {
+              "return": "n"
+            },
+            "else": {
+              "return": "fibonacci(n-1) + fibonacci(n-2)"
+            }
+          }
+        }
+      }
+    ],
+    result: "## Resumen Ejecutivo\n\nEl algoritmo de Fibonacci calcula el n-ésimo número de la secuencia de Fibonacci de forma recursiva. Cada llamada genera dos llamadas recursivas adicionales, resultando en un árbol binario de llamadas.\n\n## Análisis de Complejidad\n\nLa complejidad temporal es exponencial O(2^n) debido a que cada llamada genera dos subproblemas. La complejidad espacial es O(n) debido a la profundidad máxima de la pila de recursión.",
+    ecuaciones: {
+      big_O_temporal: "-n**2/2 + n*(n - 1) + n/2",
+      big_Theta_temporal: "-n**2/2 + n*(n - 1) + n/2",
+      big_Omega_temporal: "-n**2/2 + n*(n - 1) + n/2"
     },
-    summary: "El algoritmo de Fibonacci calcula el n-ésimo número de la secuencia de Fibonacci de forma recursiva. Cada llamada genera dos llamadas recursivas adicionales, resultando en un árbol binario de llamadas.",
+    notation: {
+      big_O_temporal: "O(n²)",
+      big_O_espacial: "O(1)",
+      big_Theta_temporal: "Θ(n²)",
+      big_Theta_espacial: "Θ(1)",
+      big_Omega_temporal: "Ω(n)",
+      big_Omega_espacial: "Ω(1)"
+    },
     solution: {
       method: "Teorema Maestro (Forma General)",
       steps: [
@@ -103,23 +118,12 @@ end`,
         ],
         explanation: "La función realiza dos llamadas recursivas con tamaños n-1 y n-2, más una operación constante para la suma."
       },
-      exact: {
-        best: "n",
-        avg: "2**n",
-        worst: "2**n"
-      },
-      bounds: {
-        omega: "2**(n/2)",
-        theta: "2**n",
-        big_o: "2**n"
-      },
       recursive_tree: {
         n_value: n,
         mermaid: generateFibonacciTree(n).mermaid,
         total_calls: generateFibonacciTree(n).calls
       }
-    },
-    type: "recursivo"
+    }
   };
 };
 

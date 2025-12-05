@@ -4,6 +4,9 @@ import '../styles/ComplexityAnalysisNew.css';
 
 const ComplexityAnalysis = ({ analysisResult }) => {
   const [expandedNodes, setExpandedNodes] = useState(new Set());
+  
+  // Nuevo formato: ast es un array, extraemos el primer elemento
+  const ast = analysisResult?.ast?.[0] || analysisResult?.syntax_tree;
 
   const toggleNode = (nodeId) => {
     const newExpanded = new Set(expandedNodes);
@@ -15,7 +18,7 @@ const ComplexityAnalysis = ({ analysisResult }) => {
     setExpandedNodes(newExpanded);
   };
 
-  const renderASTNode = (node, level = 0, parentKey = '') => {
+  const renderASTNode = (node, level = 0, parentKey = '', index = 0) => {
     if (!node || typeof node !== 'object') return null;
 
     const nodeId = `${parentKey}-${node.type || 'node'}-${level}`;
@@ -105,38 +108,13 @@ const ComplexityAnalysis = ({ analysisResult }) => {
   };
 
   // Si hay AST del backend, mostrarlo
-  if (analysisResult?.ast) {
-    const { ast, metadata } = analysisResult.ast;
-
+  if (ast) {
     return (
       <div className="complexity-analysis">
         <div className="analysis-header">
           <h3>🌳 Árbol de Sintaxis Abstracta (AST)</h3>
           <p>Estructura del algoritmo analizado</p>
         </div>
-
-        {/* Metadata del AST */}
-        {metadata && (
-          <div className="ast-metadata">
-            <h4>📊 Información del AST</h4>
-            <div className="metadata-grid">
-              <div className="metadata-item">
-                <strong>Funciones:</strong>
-                <span>{metadata.functions || 0}</span>
-              </div>
-              <div className="metadata-item">
-                <strong>Nodos Totales:</strong>
-                <span>{metadata.total_nodes || 0}</span>
-              </div>
-              <div className="metadata-item">
-                <strong>Éxito:</strong>
-                <span className={analysisResult.ast.success ? 'status-success' : 'status-error'}>
-                  {analysisResult.ast.success ? 'Sí' : 'No'}
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Árbol AST Visual */}
         {ast && (
